@@ -1,0 +1,86 @@
+﻿@page
+@using System.ComponentModel.DataAnnotations
+@model TaskManager.Pages.Tasks.IndexModel
+@{
+    ViewData["Title"] = "Minhas Tarefas";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Minhas Tarefas</h2>
+
+    <a href="/Tasks/Create" class="btn btn-success mb-3">+ Criar Nova Tarefa</a>
+
+    @if (Model.Tasks.Any())
+    {
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Título</th>
+                    <th>Categoria</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var task in Model.Tasks)
+                {
+                    <tr>
+                        <td>@task.Title</td>
+                        <td>@(task.Category?.Name ?? "Sem categoria")</td>
+                        <td>
+                            <span class="badge bg-@(task.Status == TaskManager.Enums.TaskState.Concluida ? "success" :
+                            task.Status == TaskManager.Enums.TaskState.Atrasada ? "danger" : "warning")">
+                                @(task.Status.GetType()
+                                    .GetField(task.Status.ToString())?
+                                    .GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
+                                    .FirstOrDefault() is DisplayAttribute display ? display.Name : task.Status.ToString())
+                            </span>
+                        </td>
+
+                        <td>
+                            <a href="/Tasks/Edit/@task.Id" class="btn btn-primary btn-sm">Editar</a>
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-taskid="@task.Id">
+                                Excluir
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">Nenhuma tarefa cadastrada.</div>
+    }
+</div>
+
+<!-- Modal de Confirmação para Exclusão -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza que deseja excluir esta tarefa?
+            </div>
+            <div class="modal-footer">
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" id="deleteTaskId" name="taskId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var taskId = button.getAttribute('data-taskid');
+        document.getElementById('deleteTaskId').value = taskId;
+    });
+</script>
