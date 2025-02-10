@@ -1,0 +1,47 @@
+﻿@page
+@model TaskManager.Pages.Account.ProfileModel
+@{
+    ViewData["Title"] = "Meu Perfil";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg p-4">
+                <h2 class="text-center text-primary">Meu Perfil</h2>
+
+                @if (TempData["Message"] != null)
+                {
+                    <div class="alert alert-success">@TempData["Message"]</div>
+                }
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Nome Completo <span class="text-danger">*</span></label>
+                        <input asp-for="Input.FullName" class="form-control" placeholder="Digite seu nome completo" />
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input asp-for="Input.Email" class="form-control" readonly />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Data de Nascimento <span class="text-danger">*</span></label>
+                        <input asp-for="Input.BirthDate" type="date" class="form-control" />
+                        <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Telefone (Opcional)</label>
+                        <input asp-for="Input.PhoneNumber" class="form-control" />
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

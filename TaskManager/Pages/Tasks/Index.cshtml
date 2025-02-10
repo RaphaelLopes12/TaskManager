@@ -10,6 +10,11 @@
 
     <a href="/Tasks/Create" class="btn btn-success mb-3">+ Criar Nova Tarefa</a>
 
+    <!-- Filtro de busca abaixo do botão -->
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar por título...">
+    </div>
+
     @if (Model.Tasks.Any())
     {
         <table class="table table-bordered table-striped">
@@ -21,7 +26,7 @@
                     <th>Ações</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="taskTableBody">
                 @foreach (var task in Model.Tasks)
                 {
                     <tr>
@@ -36,7 +41,6 @@
                                     .FirstOrDefault() is DisplayAttribute display ? display.Name : task.Status.ToString())
                             </span>
                         </td>
-
                         <td>
                             <a href="/Tasks/Edit/@task.Id" class="btn btn-primary btn-sm">Editar</a>
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-taskid="@task.Id">
@@ -47,6 +51,26 @@
                 }
             </tbody>
         </table>
+
+        <!-- Paginação -->
+        <nav>
+            <ul class="pagination">
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-page="./Index" asp-route-pageNumber="@(Model.CurrentPage - 1)" asp-route-pageSize="@Model.PageSize" asp-route-SearchTitle="@Model.SearchTitle">Anterior</a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-page="./Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize" asp-route-SearchTitle="@Model.SearchTitle">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" asp-page="./Index" asp-route-pageNumber="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize" asp-route-SearchTitle="@Model.SearchTitle">Próximo</a>
+                </li>
+            </ul>
+        </nav>
     }
     else
     {
@@ -77,6 +101,24 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var searchInput = document.getElementById("searchInput");
+
+        searchInput.addEventListener("input", function () {
+            var searchValue = searchInput.value.trim();
+            var url = "/Tasks/Index?SearchTitle=" + encodeURIComponent(searchValue);
+
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(data, "text/html");
+                    var newTableBody = doc.getElementById("taskTableBody");
+                    document.getElementById("taskTableBody").innerHTML = newTableBody.innerHTML;
+                });
+        });
+    });
+
     var confirmDeleteModal = document.getElementById('confirmDeleteModal');
     confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget;

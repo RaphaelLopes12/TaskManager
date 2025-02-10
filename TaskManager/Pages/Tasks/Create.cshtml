@@ -9,25 +9,25 @@
 
     <form method="post">
         <div class="mb-3">
-            <label class="form-label">Título</label>
+            <label class="form-label">Título <span class="text-danger">*</span></label>
             <input asp-for="TaskItem.Title" class="form-control" />
             <span asp-validation-for="TaskItem.Title" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Descrição</label>
+            <label class="form-label">Descrição (Opcional)</label>
             <textarea asp-for="TaskItem.Description" class="form-control"></textarea>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Data de Conclusão</label>
+            <label class="form-label">Data de Conclusão <span class="text-danger">*</span></label>
             <input asp-for="TaskItem.DueDate" type="date" class="form-control"
                    min="1900-01-01" max="2099-12-31" placeholder="dd/MM/yyyy" />
             <span asp-validation-for="TaskItem.DueDate" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Categoria</label>
+            <label class="form-label">Categoria <span class="text-danger">*</span></label>
             <select asp-for="TaskItem.CategoryId" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))"
                     class="form-select" required>
                 <option value="">Selecione uma categoria</option>

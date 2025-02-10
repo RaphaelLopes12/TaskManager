@@ -9,12 +9,12 @@ public class TaskItem
 {
     public int Id { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "O título da tarefa é obrigatório.")]
     public string Title { get; set; } = string.Empty;
 
-    public string Description { get; set; } = string.Empty;
+    public string? Description { get; set; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "A data de conclusão é obrigatória.")]
     [DataType(DataType.Date)]
     [Range(typeof(DateTime), "1900-01-01", "2099-12-31", ErrorMessage = "A data deve estar entre 1900 e 2099.")]
     public DateTime DueDate { get; set; }

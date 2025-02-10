@@ -28,6 +28,35 @@ public class TaskService
             .FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId);
     }
 
+    public async Task<PagedResult<TaskItem>> GetPagedTasksAsync(string userId, int pageNumber, int pageSize, string searchTitle = "")
+    {
+        var query = _context.Tasks
+                            .Where(t => t.UserId == userId);
+
+        if (!string.IsNullOrWhiteSpace(searchTitle))
+        {
+            query = query.Where(t => t.Title.Contains(searchTitle));
+        }
+
+        var totalCount = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        var tasks = await query
+            .OrderByDescending(t => t.DueDate)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Include(t => t.Category)
+            .ToListAsync();
+
+        return new PagedResult<TaskItem>
+        {
+            Items = tasks,
+            CurrentPage = pageNumber,
+            TotalPages = totalPages,
+            PageSize = pageSize
+        };
+    }
+
     public async Task<List<Category>> GetCategoriesAsync()
     {
         return await _context.Categories.ToListAsync();

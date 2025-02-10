@@ -22,26 +22,21 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Tasks/Index">Tarefas</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Account/Profile">Perfil</a>
+                            </li>
                         }
                     </ul>
 
-                    <!-- Se o usuário estiver autenticado, exibe o nome completo e botão de logout -->
                     <ul class="navbar-nav">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            var user = await UserManager.GetUserAsync(User); // Obtém o usuário autenticado
-
+                            var user = await UserManager.GetUserAsync(User);
                             <li class="nav-item">
                                 <span class="nav-link text-dark">Olá, @(user?.FullName ?? "Usuário")!</span>
                             </li>
@@ -70,9 +65,9 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted mt-auto">
+    <footer class="footer mt-auto border-top text-muted">
         <div class="container text-center">
-            &copy; 2025 - TaskManager - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2025 - TaskManager
         </div>
     </footer>
 
@@ -82,4 +77,3 @@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-</html>

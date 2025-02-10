@@ -28,4 +28,9 @@ public class PortugueseIdentityErrorDescriber : IdentityErrorDescriber
     {
         return new IdentityError { Code = nameof(PasswordTooShort), Description = $"A senha deve ter no mínimo {length} caracteres." };
     }
+
+    public override IdentityError DuplicateUserName(string userName)
+    {
+        return new IdentityError { Code = nameof(DuplicateUserName), Description = "Este e-mail já está em uso." };
+    }
 }
