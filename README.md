@@ -45,7 +45,7 @@ git clone https://github.com/RaphaelLopes12/TaskManager.git
 cd TaskManager
 ```
 
-3️⃣ Configurar o banco de dados
+### 3️⃣ Configurar o banco de dados
 Edite o arquivo appsettings.json e configure a connection string corretamente para o SQL Server.
 
 ### 4️⃣ Criar as Migrations
@@ -59,6 +59,53 @@ dotnet ef database update
 ```bash
 dotnet run
 ```
+
+## 🐳 Executando com Docker
+
+Para facilitar a execução do projeto sem necessidade de configurar manualmente o ambiente, utilizamos **Docker** para containerizar a aplicação.
+
+### 📌 Pré-requisitos
+- **Docker** e **Docker Compose** instalados em sua máquina.
+
+### 🚀 Construindo e executando com Docker
+
+1️⃣ **Clonar o repositório**:
+```bash
+git clone https://github.com/RaphaelLopes12/TaskManager.git
+cd TaskManager
+```
+
+2️⃣ **Construir e rodar os containers**:
+```bash
+docker-compose up --build -d
+```
+Isso irá:
+- Criar e iniciar um container para o banco de dados SQL Server.
+- Criar e iniciar um container para a aplicação ASP.NET.
+
+3️⃣ **Acessar a aplicação**:
+Após o processo de build e inicialização, a aplicação estará disponível em:
+```
+http://localhost:5000
+```
+Caso tenha modificado as portas no `docker-compose.yml`, utilize a respectiva porta configurada.
+
+### 📌 Parando os containers
+Para parar e remover os containers, utilize:
+```bash
+docker-compose down
+```
+Isso encerrará a aplicação e o banco de dados sem perder os dados persistidos.
+
+### 🎯 Criando as Migrations e Atualizando o Banco
+Se precisar recriar as migrations e atualizar o banco dentro do container, execute:
+```bash
+docker exec -it taskmanager-api dotnet ef migrations add InitialCreate
+
+docker exec -it taskmanager-api dotnet ef database update
+```
+
+Agora seu ambiente está pronto e configurado para rodar de maneira simplificada utilizando Docker! 🚀
 
 ## 🔗 Licença
 Este projeto é de código aberto e pode ser utilizado livremente sob a licença MIT.
